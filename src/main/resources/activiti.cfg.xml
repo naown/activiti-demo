@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans [
+        <!ELEMENT beans (bean)*>
+        <!ATTLIST beans
+                xmlns CDATA #REQUIRED
+                xmlns:xsi CDATA #REQUIRED
+                xsi:schemaLocation CDATA #REQUIRED>
+        <!ELEMENT bean (property)*>
+        <!ATTLIST bean
+                id CDATA #REQUIRED
+                class CDATA #REQUIRED>
+        <!ELEMENT property (#PCDATA)>
+        <!ATTLIST property
+                name CDATA #REQUIRED
+                value CDATA #REQUIRED>
+        ]>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                    http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- processEnqine Activiti 的流程引擎 -->
+    <bean id="processEngineConfiguration"
+          class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
+        <property name="jdbcDriver" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="jdbcUrl"
+                  value="jdbc:mysql://121.199.24.182:3306/activiti7?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=Asia/Shanghai&amp;useSSL=false&amp;nullCatalogMeansCurrent=true"/>
+        <property name="jdbcUsername" value="root"/>
+        <property name="jdbcPassword" value="root"/>
+
+        <!-- activiti 数据库表处理策略 -->
+        <!-- databaseSchemaUpdate 属性的值可以设置为以下几种 -->
+        <!-- none：这是默认值，表示不对数据库模式做任何变更，应用程序启动时不会检查数据库表结构是否与实体类匹配-->
+        <!-- true：设置为 true 时，Spring会在应用程序启动时检查数据库表结构，并在发现不匹配时自动创建或修改表结构以匹配实体类定义。这相当于执行了数据库迁移-->
+        <!-- create：与 true 类似，但 create 会在每次启动时删除并重新创建表，这可能会导致数据丢失，因此使用时需要谨慎-->
+        <!-- create-drop：在每次启动应用程序时创建表，在关闭应用程序时删除表。这通常用于测试环境-->
+        <!-- validate：在启动时验证数据库表结构是否与实体类定义匹配，如果不匹配则抛出异常，但不会自动进行任何更改-->
+        <property name="databaseSchemaUpdate" value="true"/>
+
+    </bean>
+
+    <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+        <property name="processEngineConfiguration" ref="processEngineConfiguration"/>
+    </bean>
+
+    <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService"/>
+    <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
+    <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService"/>
+    <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService"/>
+    <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
+</beans>
