@@ -1,0 +1,12 @@
+server:
+  servlet:
+    context-path: /activiti-explorer/service
+spring:
+  application:
+    name: activiti-demo
+  datasource:
+    #url切换数据库之后如果对应数据库名称和路径有变动，需要修改url
+    url: jdbc:mysql://121.199.24.182:3306/activiti7?useUnicode=true&characterEncoding=utf-8&useSSL=false&nullCatalogMeansCurrent=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
